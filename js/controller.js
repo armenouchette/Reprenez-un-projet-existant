@@ -120,7 +120,7 @@
 	 */
 	Controller.prototype.editItemSave = function (id, title) {
 		var self = this;
-
+		console.log('Enregistrement d\'une tâche éditée : ', id, title);
 		while (title[0] === " ") {
 			title = title.slice(1);
 		}
@@ -167,9 +167,10 @@
 			if (item.id === id) {
 			}
 		});
-
+//Amélioration
 		self.model.remove(id, function () {
 			self.view.render('removeItem', id);
+			console.log('Suppression d\'une tâche : ', id);
 		});
 
 		self._filter();
@@ -203,6 +204,7 @@
 	 */
 	Controller.prototype.toggleComplete = function (id, completed, silent) {
 		var self = this;
+		console.log("Toggle complete for task with ID:", id, "Completed status:", completed);
 		self.model.update(id, { completed: completed }, function () {
 			self.view.render('elementComplete', {
 				id: id,
@@ -221,6 +223,7 @@
 	 */
 	Controller.prototype.toggleAll = function (completed) {
 		var self = this;
+		console.log("Toggle all tasks to completed:", completed);
 		self.model.read({ completed: !completed }, function (data) {
 			data.forEach(function (item) {
 				self.toggleComplete(item.id, completed, true);

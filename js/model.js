@@ -109,7 +109,7 @@
 					todos.active++;
 				}
 			});
-	
+	/*Amélioration*/
 			todos.total = todos.active + todos.completed;
 			callback(todos);
 		});

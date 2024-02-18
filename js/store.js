@@ -74,56 +74,26 @@
 	 * @param {function} callback The callback to fire after saving
 	 * @param {number} id An optional param to enter an ID of an item to update
 	 */
-	Store.prototype.save = function (updateData, callback, id) {
+
+	Store.prototype.save = function(updateData, callback, id) {
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
 	
-		callback = callback || function () {};
+		callback = callback || function() {};
 	
-		// Génération d'un ID unique
-		var newId = "";
-		var charset = "0123456789";
-		var uniqueIdFound = false;
-	
-	
-		while (!uniqueIdFound) {
-			newId = "";
-			for (var i = 0; i < 6; i++) {
-				newId += charset.charAt(Math.floor(Math.random() * charset.length));
-			}
-	
-			// Vérifiez si l'ID généré est unique
-			uniqueIdFound = true;
-			for (var i = 0; i < todos.length; i++) {
-				if (todos[i].id.toString() === newId) {
-					uniqueIdFound = false;
-					break;
-				}
-			}
-		}
-	
-		// Si un ID a été donné, mettez à jour l'élément
+		// Si un id est déjà présent, on met à jour la tâche existante 
+		//sert si on enlève ou remet une tâche comme effectuée
 		if (id) {
-	
-			for (var i = 0; i < todos.length; i++) {
-				if (todos[i].id === id) {
-					for (var key in updateData) {
-						todos[i][key] = updateData[key];
-					}
-					break;
-				}
-			}
-	
-			localStorage[this._dbName] = JSON.stringify(data);
-			callback.call(this, todos);
+			todos = todos.map(todo => todo.id === id ? { ...todo, ...updateData } : todo);
 		} else {
-			// Assignez l'ID unique
-			updateData.id = parseInt(newId);
-	
+			// Générer un ID unique basé sur le temps actuel
+			updateData.id = Date.now();
+			console.log('Nouvelle tâche ajoutée avec l\'ID :', updateData.id); 
 			todos.push(updateData);
-			localStorage[this._dbName] = JSON.stringify(data);
-			callback.call(this, [updateData]);
 		}
+
+		localStorage[this._dbName] = JSON.stringify({ todos });
+		callback.call(this, todos);
 	};
 	
 
@@ -133,11 +103,11 @@
 	 * @param {number} id The ID of the item you want to remove
 	 * @param {function} callback The callback to fire after saving
 	 */
-	Store.prototype.remove = function (id, callback) {
+	Store.prototype.remove = function(id, callback) {
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
 		var todoId;
-		
+
 		for (var i = 0; i < todos.length; i++) {
 			if (todos[i].id == id) {
 				todoId = todos[i].id;
