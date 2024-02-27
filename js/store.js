@@ -88,7 +88,6 @@
 		} else {
 			// Générer un ID unique basé sur le temps actuel
 			updateData.id = Date.now();
-			console.log('Nouvelle tâche ajoutée avec l\'ID :', updateData.id); 
 			todos.push(updateData);
 		}
 
